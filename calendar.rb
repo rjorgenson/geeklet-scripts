@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+#coding: utf-8
 
 require 'optparse'
 require 'Date'
@@ -46,9 +47,9 @@ class Line_Calendar
   SEPARATOR_STRING_C = "··" # the separator string
   END_COLOR = "\e[0m" # this string ends color output
   HI_COLOR = "\e[1m" # this string denotes bold color
-  ABBR_DAYNAMES = {0, 'Su', 1, 'Mo', 2, 'Tu', 3, 'We', 4, 'Th', 5, 'Fr', 6, 'Sa'} # map of abbreviated day names to matching index for date functions
+  ABBR_DAYNAMES = {0 =>  'Su', 1 => 'Mo', 2 => 'Tu', 3 => 'We', 4 => 'Th', 5 => 'Fr', 6 => 'Sa'} # map of abbreviated day names to matching index for date functions
   # hash of the different colors available as ASCII output
-  COLORS = {'black', "\e[30m", 'red', "\e[31m", 'green', "\e[32m", 'yellow', "\e[33m", 'blue', "\e[34m", 'magenta', "\e[35m", 'cyan', "\e[36m", 'white', "\e[37m"}
+  COLORS = {'black' => "\e[30m", 'red' => "\e[31m", 'green' => "\e[32m", 'yellow' => "\e[33m", 'blue' => "\e[34m", 'magenta' => "\e[35m", 'cyan' => "\e[36m", 'white' => "\e[37m"}
 
   def initialize(opts)
     @options = opts
