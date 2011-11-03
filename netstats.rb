@@ -75,8 +75,8 @@ class Net_Stats
   end
   
   def get_txrx_totals
-    rx = %x{netstat -ib | grep -e "#{@options[:iface]}" -m 1 | awk '{print $7}'}.to_i
-    tx = %x{netstat -ib | grep -e "#{@options[:iface]}" -m 1 | awk '{print $10}'}.to_i
+    rx = %x{netstat -I #{@options[:iface]} -b | grep -e "#{@options[:iface]}" -m 1 | awk '{print $7}'}.to_i
+    tx = %x{netstat -I #{@options[:iface]} -b | grep -e "#{@options[:iface]}" -m 1 | awk '{print $10}'}.to_i
     return self.human_readable_bytes(tx) + " : " + self.human_readable_bytes(rx)
   end
   
