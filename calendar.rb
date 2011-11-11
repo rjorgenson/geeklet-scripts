@@ -16,8 +16,7 @@ parser = OptionParser.new do |opts|
   end
   
   options[:color] = 'green'
-  opts.on( '-c COLOR', '--color COLOR', 'Sets the color to use as the current day marker') do |color|
-    # validate color here
+  opts.on( '-c COLOR', '--color COLOR', [:black, :red, :green, :yellow, :blue, :magenta, :cyan, :white], 'Sets the color to use as the current day marker (black, red, green, yellow, blue, magenta, cyan, white)') do |color|
     options[:color] = color
   end
   
@@ -87,7 +86,7 @@ class Line_Calendar
         # use hicolor flag?
         @options[:hicolor] == "yes" ? separator[d] = HI_COLOR : separator[d] = ""
         # append colorized date string to array
-        separator[d] += Line_Calendar::COLORS[@options[:color]] + Line_Calendar::COLOR_STRING + Line_Calendar::END_COLOR
+        separator[d] += Line_Calendar::COLORS[@options[:color].to_s] + Line_Calendar::COLOR_STRING + Line_Calendar::END_COLOR
       else
         # append normal separator to the array
         separator[d] = Line_Calendar::SEPARATOR_STRING_B
