@@ -15,6 +15,16 @@ parser = OptionParser.new do |opts|
     options[:vertical] = true
   end
   
+  options[:indicator] = '◆◆'
+  opts.on( 'i INDICATOR', '--indicator INDICATOR', 'The string used to denote which day it currently is on the separator (should be 2 characters)') do |indicator|
+    options[:indicator] = indicator
+  end
+  
+  options[:colorize] = false
+  opts.on( '-C', '--colorize', 'indicate the current day with color') do
+    options[:colorize] = true
+  end
+  
   options[:color] = 'green'
   opts.on( '-c COLOR', '--color COLOR', [:black, :red, :green, :yellow, :blue, :magenta, :cyan, :white], 'Sets the color to use as the current day marker (black, red, green, yellow, blue, magenta, cyan, white)') do |color|
     options[:color] = color
@@ -26,10 +36,20 @@ parser = OptionParser.new do |opts|
   end
   
   options[:colordate] = false
-  opts.on( '-d', '--colordate', 'Use color to mark the day in addition to the date') do
+  opts.on( '-d', '--colordate', 'Use color to mark the date (01, 02, 03) _NOT_IMPLEMENTED_') do
     options[:colordate] = true
   end
   
+  options[:colorday] = false
+  opts.on( '-d', '--colorday', 'Use color to mark the day (Mo, Tu, We) _NOT_IMPLEMENTED_') do
+    options[:colorday] = true
+  end
+
+  options[:noseparator] = false
+  opts.on( '-S', '--noseparator', 'Do not output the separator line between days and dates') do
+    options[:noseparator] = true
+  end
+
   opts.on( '-h', '--help', 'Displays this help dialogue' ) do
     puts opts
     exit
@@ -40,7 +60,6 @@ parser.parse!
 
 class Line_Calendar
   # set up some constants for use in throughout the script
-  COLOR_STRING = "◆◆" # the string used to denote the current day
   SEPARATOR_STRING_A = "  " # the string used to separate days and dates
   SEPARATOR_STRING_B = "··" # the string used between seperators
   SEPARATOR_STRING_C = "··" # the separator string
@@ -81,15 +100,12 @@ class Line_Calendar
     separator = Array.new
     # cycle through days in month
     for d in (1..self.days_in_month(year, month))
-      # if day in month matches today use colorized date indicator
+      # does this match today?
       if year == Time.now.year && month == Time.now.month && d == Time.now.day then
-        # use hicolor flag?
-        @options[:hicolor] == "yes" ? separator[d] = HI_COLOR : separator[d] = ""
-        # append colorized date string to array
-        separator[d] += Line_Calendar::COLORS[@options[:color].to_s] + Line_Calendar::COLOR_STRING + Line_Calendar::END_COLOR
+        separator[d.to_i] = @options[:indicator]
       else
-        # append normal separator to the array
-        separator[d] = Line_Calendar::SEPARATOR_STRING_B
+        # append separator to the array
+        separator[d.to_i] = Line_Calendar::SEPARATOR_STRING_B
       end
     end
     # trim 0 key and move everything up one
@@ -102,17 +118,11 @@ class Line_Calendar
     date_array = Array.new
     # cycle through days in month creating one key in the array for each day
     for d in (1..self.days_in_month(year, month))
-      # make sure all dates are two digits
-      if d < 10 then
+      if d.to_i < 10 then
         # if date is 1-9 make sure it is 01-09
         d = "0#{d}"
       end
-      if year == Time.now.year && month == Time.now.month && d == Time.now.day && @options[:colordate] then
-        @options[:hicolor] == "yes" ? date_array[d] = HI_COLOR : date_array[d] = ""
-        date_array[d.to_i] += Line_Calendar::COLORS[@options[:color]] + d.to_s + Line_Calendar::END_COLOR
-      else
-        date_array[d.to_i] = d
-      end
+      date_array[d.to_i] = d
     end
     # remove 0 key for 1 to 1 mapping in array
     date_array.shift
@@ -128,8 +138,31 @@ class Line_Calendar
     # zip the two arrays so we have the following single array to work with
     # [['Mo', '01'], ['Tu', '02']]
     vertical = days.zip(dates)
-    
+
     return vertical
+  end
+
+  def colorize_days(days)
+    # implement method to make the day (Mo, Tu, We) colorized
+  end
+
+  def colorize_separator(sep) # add color to the separator day indicator
+    count = 1 # seed to keep track of where we are in the array
+    sep.each do |s|
+      # if it's today, add color and replace string in array
+      if Time.now.day == count then
+          sep[count -1] = Line_Calendar::COLORS[@options[:color].to_s] + @options[:indicator] + Line_Calendar::END_COLOR
+      end
+      # increment counter
+      count += 1
+      # loop de loop until finished
+    end
+    # return new array with colorized strings added
+    return sep
+  end
+
+  def colorsize_dates(dates)
+    # implement method to make the date (01, 02, 03) colorized
   end
 end
 
@@ -137,27 +170,49 @@ cal = Line_Calendar.new(options) # pass command line args to object
 year = Time.now.year # current year
 month = Time.now.month # current month
   
+# print out vertically
 if options[:vertical] then
-  # pull vertical array zip (this can be trimmed up and combined I think)
+  # build and grab relevant information in a hash ( Mo => 01, Tu => 02 )
   varray = cal.build_vertical_array(year, month)
   # foreach entry in array
   varray.each do |d|
-    # does the day entry match today?
-    if year == Time.now.year && month == Time.now.month && d[1].to_i == Time.now.day then
-      # colorize accordingly
-      options[:hicolor] == "yes" ? temp_separator = HI_COLOR : temp_separator = ""
-      temp_separator += Line_Calendar::COLORS[options[:color]] + Line_Calendar::COLOR_STRING + Line_Calendar::END_COLOR
+    # if no separator was requested, don't print one
+    if options[:noseparator] then
+      # each hash pair printed out separated by spaces
+      puts d[0].to_s + Line_Calendar::SEPARATOR_STRING_A + d[1].to_s
+    elsif Time.now.year == year && Time.now.month == month && d[1].to_i == Time.now.day then
+      # is it today?
+      if options[:colorize] then
+        # add color and indicator if requested
+        puts d[0].to_s + Line_Calendar::SEPARATOR_STRING_A + Line_Calendar::COLORS[options[:color].to_s] + options[:indicator] + Line_Calendar::END_COLOR + Line_Calendar::SEPARATOR_STRING_A + d[1].to_s
+      else
+        # otherwise just add indicator
+        puts d[0].to_s + Line_Calendar::SEPARATOR_STRING_A + options[:indicator] + Line_Calendar::SEPARATOR_STRING_A + d[1].to_s
+      end
     else
-      # no color
-      temp_separator = Line_Calendar::SEPARATOR_STRING_C
+      # not today, no indication required
+      puts d[0].to_s + Line_Calendar::SEPARATOR_STRING_A + Line_Calendar::SEPARATOR_STRING_C + Line_Calendar::SEPARATOR_STRING_A + d[1].to_s
     end
-    # print out results one line at a time vertically
-    puts d[0].to_s + " " + temp_separator + " " + d[1].to_s
   end
 else
-  # print out as normal
-  # arrays joined by separator strings
+# print out horizontally
+  
+  # each day (Mo, Tu, We) separated by spaces
   puts cal.build_day_array(year, month) * Line_Calendar::SEPARATOR_STRING_A
-  puts cal.build_separator(year, month) * Line_Calendar::SEPARATOR_STRING_C
+
+  # if no separator requested then don't print one
+  if options[:noseparator] then
+  # otherwise print one
+  else
+    # add color if requested
+    if options[:colorize] then
+      puts cal.colorize_separator(cal.build_separator(year, month)) * Line_Calendar::SEPARATOR_STRING_C
+    else
+      # plain separator with no color
+      puts cal.build_separator(year, month) * Line_Calendar::SEPARATOR_STRING_C
+    end
+  end
+
+  # each date (01, 02, 03) separated by spaces
   puts cal.build_date_array(year, month) * Line_Calendar::SEPARATOR_STRING_A
 end
