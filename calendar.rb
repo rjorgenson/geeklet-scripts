@@ -2,7 +2,7 @@
 #coding: utf-8
 
 require 'optparse'
-require 'Date'
+require 'date'
 
 options = {}
 
