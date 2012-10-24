@@ -8,4 +8,5 @@ calendar.rb -   outputs a calendar in one line (3 actual lines, but not broken u
 
 date.rb	    -   this is just a simple script to output the date in various formats
                 was my first ruby geeklet script, just figuring out how to do stuff
-                mostly useless, but I still use it for displaying date information on my screen
+                mostly useless, but I still use it for displaying date information on my 
+                screen
