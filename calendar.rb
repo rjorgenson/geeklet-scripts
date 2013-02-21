@@ -36,12 +36,12 @@ parser = OptionParser.new do |opts|
   end
   
   options[:colordate] = false
-  opts.on( '-d', '--colordate', 'Use color to mark the date (01, 02, 03) _NOT_IMPLEMENTED_') do
+  opts.on( '-d', '--colordate', 'Use color to mark the date (01, 02, 03) - horizontal only') do
     options[:colordate] = true
   end
   
   options[:colorday] = false
-  opts.on( '-d', '--colorday', 'Use color to mark the day (Mo, Tu, We) _NOT_IMPLEMENTED_') do
+  opts.on( '-d', '--colorday', 'Use color to mark the day (Mo, Tu, We) - horizontal only') do
     options[:colorday] = true
   end
 
@@ -144,6 +144,14 @@ class Line_Calendar
 
   def colorize_days(days)
     # implement method to make the day (Mo, Tu, We) colorized
+    count = 1
+    days.each do |d|
+        if Time.now.day == count then
+            days[count -1] = Line_Calendar::COLORS[@options[:color].to_s] + d + Line_Calendar::END_COLOR
+        end
+        count += 1
+    end
+    return days
   end
 
   def colorize_separator(sep) # add color to the separator day indicator
@@ -161,8 +169,16 @@ class Line_Calendar
     return sep
   end
 
-  def colorsize_dates(dates)
+  def colorize_dates(dates)
     # implement method to make the date (01, 02, 03) colorized
+    count = 1
+    dates.each do |d|
+        if Time.now.day == count then
+            dates[count -1] = Line_Calendar::COLORS[@options[:color].to_s] + d.to_s + Line_Calendar::END_COLOR
+        end
+        count += 1
+    end
+    return dates
   end
 end
 
@@ -198,7 +214,12 @@ else
 # print out horizontally
   
   # each day (Mo, Tu, We) separated by spaces
-  puts cal.build_day_array(year, month) * Line_Calendar::SEPARATOR_STRING_A
+  if options[:colorday] then  # add color indicating day
+    puts cal.colorize_days(cal.build_day_array(year, month)) * Line_Calendar::SEPARATOR_STRING_A
+  else
+    # no color, just output days
+    puts cal.build_day_array(year, month) * Line_Calendar::SEPARATOR_STRING_A
+  end
 
   # if no separator requested then don't print one
   if options[:noseparator] then
@@ -214,5 +235,10 @@ else
   end
 
   # each date (01, 02, 03) separated by spaces
-  puts cal.build_date_array(year, month) * Line_Calendar::SEPARATOR_STRING_A
+  if options[:colordate] then # add color indicating current date
+      puts cal.colorize_dates(cal.build_date_array(year, month)) * Line_Calendar::SEPARATOR_STRING_A
+  else
+      # no color, just output dates
+      puts cal.build_date_array(year, month) * Line_Calendar::SEPARATOR_STRING_A
+  end
 end
