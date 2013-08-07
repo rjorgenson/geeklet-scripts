@@ -214,9 +214,10 @@ else
 # print out horizontally
   
   # each day (Mo, Tu, We) separated by spaces
-  if options[:colorday] then
-      puts cal.colorize_days(cal.build_day_array(year, month)) * Line_Calendar::SEPARATOR_STRING_A
+  if options[:colorday] then  # add color indicating day
+    puts cal.colorize_days(cal.build_day_array(year, month)) * Line_Calendar::SEPARATOR_STRING_A
   else
+    # no color, just output days
     puts cal.build_day_array(year, month) * Line_Calendar::SEPARATOR_STRING_A
   end
 
