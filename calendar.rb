@@ -235,9 +235,9 @@ else
   end
 
   # each date (01, 02, 03) separated by spaces
-  if options[:colordate] then
+  if options[:colordate] then # add color indicating date
       puts cal.colorize_date(cal.build_date_array(year, month)) * Line_Calendar::SEPARATOR_STRING_A
-  else
+  else # no color, just output dates
     puts cal.build_date_array(year, month) * Line_Calendar::SEPARATOR_STRING_A
   end
 end
