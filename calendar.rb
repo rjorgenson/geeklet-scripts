@@ -174,7 +174,7 @@ class Line_Calendar
     count = 1
     dates.each do |d|
         if Time.now.day == count then
-            dates[count -1] = Line_Calendar::COLORS[@options[:color].to_s] + dates[count -1] + Line_Calendar::END_COLOR
+            dates[count -1] = Line_Calendar::COLORS[@options[:color].to_s] + dates[count -1].to_s + Line_Calendar::END_COLOR
         end
         count += 1
     end
