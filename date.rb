@@ -10,6 +10,8 @@ class Datetime
   end # def short
   
   def time # 11:11 PM
+      #    future support for time zones and possibly world clocks!
+#    ENV['TZ']='America/Chicago'
     return Time.now.strftime("%I:%M %p")
   end # def time
   
