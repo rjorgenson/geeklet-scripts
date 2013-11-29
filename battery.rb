@@ -13,6 +13,10 @@ parser = OptionParser.new do |opts|
   opts.on( '-c', '--color', 'Display battery meter with color' ) do
     options[:color] = true
   end
+  options[:size] = "small"
+  opts.on( '-s SIZE', '--size SIZE', [:small, :big, :bigger], 'Size (small, big, bigger) of battery meter') do |size|
+    options[:size] = size
+  end
   
   opts.on( '-h', '--help', 'Displays this help screen' ) do
     puts opts
@@ -23,7 +27,8 @@ end
 parser.parse!
 
 class Battery
-  def initialize() # gather relevant info
+  def initialize(opts) # gather relevant info
+    @options = opts
     @conn = `ioreg -n AppleSmartBattery | grep ExternalConnected | awk '{ print $5 }'` # is power connected
     @chrg = `ioreg -n AppleSmartBattery | grep IsCharging | awk '{ print $5 }'` # is battery chargin
     @time = `ioreg -n AppleSmartBattery | grep TimeRemaining | awk '{ print $5 }'` # time remaining on battery
@@ -33,6 +38,28 @@ class Battery
 
   def build_meter(color) # built battery meter
     percent = self.build_percent # get capacity percentage
+    # case size
+    #puts @options[:size]
+    if @options[:size].to_s == "small" then
+      blength = 10
+      bpercent = 10
+      bred = 1
+      byellow = 3
+      bgreen = 10
+    elsif @options[:size].to_s == "big" then
+      blength = 20
+      bpercent = 5
+      bred = 2
+      byellow = 6
+      bgreen = 20
+    else
+      blength = 50
+      bpercent = 2
+      bred = 5
+      byellow = 15
+      bgreen = 50
+    end
+    
     if color then
       red = "\e[31m"
       yellow = "\e[33m"
@@ -46,16 +73,16 @@ class Battery
     end
     meter = ""
     
-    for i in (1..10) # one bar per 10% battery, dashes for each empty 10%
-      if percent >= 10 then
-        i <= 2 ? meter << red : nil # first 2 bars red
-        i <= 5 && i > 2 ? meter << yellow : nil # next 3 bars yellow
-        i <= 10 && i > 5 ? meter << green : nil # remaining 5 green
+    for i in (1..blength) # one bar per 10% battery, dashes for each empty 10%
+      if percent >= bpercent then
+        i <= bred ? meter << red : nil # first 2 bars red
+        i <= byellow && i > bred ? meter << yellow : nil # next 3 bars yellow
+        i <= bgreen && i > byellow ? meter << green : nil # remaining 5 green
         meter << "❚" + clear # clear color
       else
         meter << "·" # empty
       end # if percent >= 10
-      percent -= 10 # decrement percentage for next loop
+      percent -= bpercent # decrement percentage for next loop
     end # for i in (1..10)
     return meter + clear
   end # def build_meter
@@ -87,6 +114,6 @@ class Battery
   end # def build_percent
 end # Class Battery
 
-battery = Battery.new
+battery = Battery.new(options)
 
 puts battery.build_meter(options[:color]) + ' ' + battery.build_percent.to_s + '% (' + battery.build_time.to_s + ')'
