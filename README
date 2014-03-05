@@ -6,7 +6,10 @@ battery.rb  -   shows battery status, intends to fully replace battery meter on 
 calendar.rb -   outputs a calendar in one line (3 actual lines, but not broken up by weeks)
                 can display vertically or horizontally
 
-date.rb	    -   this is just a simple script to output the date in various formats
+date.rb     -   this is just a simple script to output the date in various formats
                 was my first ruby geeklet script, just figuring out how to do stuff
                 mostly useless, but I still use it for displaying date information on my 
                 screen
+
+netstats.rb -   Outputs statistics from your network connection, see netstats.rb --help
+                for all options available
