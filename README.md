@@ -1,10 +1,11 @@
 Each commands options can be seen by issuing the -h or --help argument on the command line
 
 battery.rb  -   shows battery status, intends to fully replace battery meter on status bar
-                * only tested on April 2010 13" MacBook Pro and the 11" MacBook Air
+                tested on OS X versions 10.7-10.9 on various laptop hardware
 
-calendar.rb -   outputs a calendar in one line (3 actual lines, but not broken up by weeks)
-                can display vertically or horizontally
+calendar.rb -   outputs a calendar in a linear and monthly format as opposed to weekly can
+                be displayed vertically or horizontally with different options to mark the
+                current day
 
 date.rb     -   this is just a simple script to output the date in various formats
                 was my first ruby geeklet script, just figuring out how to do stuff
