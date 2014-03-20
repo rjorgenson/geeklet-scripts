@@ -1,16 +1,43 @@
-Each commands options can be seen by issuing the -h or --help argument on the command line
+# Geeklet Scripts
 
-battery.rb  -   shows battery status, intends to fully replace battery meter on status bar
-                tested on OS X versions 10.7-10.9 on various laptop hardware
+## A collection of scripts for use with GeekTool
 
-calendar.rb -   outputs a calendar in a linear and monthly format as opposed to weekly can
-                be displayed vertically or horizontally with different options to mark the
-                current day
+### calendar.rb
 
-date.rb     -   this is just a simple script to output the date in various formats
-                was my first ruby geeklet script, just figuring out how to do stuff
-                mostly useless, but I still use it for displaying date information on my 
-                screen
+```
+Usage: calendar.rb [options]
+    -v, --vertical                   Orients the calendar vertically instead of horizontally
+        --indicator INDICATOR        i INDICATOR
+                                     The string used to denote which day it currently is on the separator (should be 2 characters)
+        --colorize                   indicate the current day with color
+    -c, --color COLOR                Sets the color to use as the current day marker (black, red, green, yellow, blue, magenta, cyan, white)
+    -C, --hicolor                    Uses the hicolor ASCII value for the chose color
+        --colordate                  Use color to mark the date (01, 02, 03)
+    -d, --colorday                   Use color to mark the day (Mo, Tu, We)
+    -S, --noseparator                Do not output the separator line between days and dates
+    -h, --help                       Displays this help dialogue
+```
 
-netstats.rb -   Outputs statistics from your network connection, see netstats.rb --help
-                for all options available
+### battery.rb
+```
+Usage: battery.rb [options]
+    -c, --color                      Display battery meter with color
+    -s, --size SIZE                  Size (small, big, bigger) of battery meter
+    -h, --help                       Displays this help screen
+```
+### netstats.rb
+```
+Usage: netstats.rb [options]
+    -i, --iface IFACE                Set iface to monitor
+    -w, --wifi                       iface is a wireless access point
+    -s, --server                     set the server to gauge ping response[google.com]
+    -h, --help                       Displays this help screen
+```
+
+### date.rb
+```
+Usage: date.rb [string type]
+    -t, --type TYPE                  Date string type to output (long, short, time, longDate, shortDate, string)
+    -s, --string "STRING"            UNIX date string to output
+    -h, --help                       Displays this help screen
+```
