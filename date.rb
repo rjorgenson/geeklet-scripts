@@ -1,5 +1,30 @@
 #!/usr/bin/env ruby
 
+require 'open-uri'
+require 'optparse'
+options = {}
+
+parser = OptionParser.new do |opts|
+  opts.banner = "Usage: date.rb [string type]"
+  
+  options[:type] = 'long'
+  opts.on( '-t TYPE', '--type TYPE', 'Date string type to output (long, short, time, longDate, shortDate, string)' ) do |type|
+    options[:type] = type
+  end
+
+  options[:string] = ''
+  opts.on( '-s "STRING"', '--string "STRING"', 'UNIX date string to output') do |string|
+    options[:string] = string
+  end
+
+  opts.on( '-h', '--help', 'Displays this help screen' ) do
+    puts opts
+    exit
+  end
+end
+
+parser.parse!
+
 class Datetime
   def long # Tuesday, September 23 11:11 PM
     return Time.now.strftime("%A, %B %d %I:%M %p")
@@ -29,10 +54,10 @@ class Datetime
 end # class DateTime
 
 time = Datetime.new
-if ARGV[0] == nil then
+if options[:type] == nil then
   puts time.long
 else
-  case ARGV[0]
+  case options[:type]
   when "long"
     puts time.long
   when "short"
@@ -44,12 +69,12 @@ else
   when "shortDate"
     puts time.shortDate
   when "string"
-    if ARGV[1] == nil then
+    if options[:string] == nil then
       puts "Please enter a date format string"
     else
-      puts time.string(ARGV[1])
-    end # if ARGV[2] == nil
+      puts time.string(options[:string])
+    end # if options[:string] == nil
   else
     puts time.long
-  end # case ARGV[1]
-end # if ARGV[1] == nil
+  end # case options[:type]
+end # if options[:type] == nil
