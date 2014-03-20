@@ -18,6 +18,11 @@ parser = OptionParser.new do |opts|
     options[:wifi] = true
   end
 
+  options[:ping] = false
+  opts.on('-p', '--ping', 'run ping test to specified server[default: google.com]' ) do
+      options[:ping] = true
+  end
+
   options[:server] = 'google.com'
   opts.on( '-s', '--server', 'set the server to gauge ping response[google.com]' ) do |server|
     options[:server] = server
@@ -120,7 +125,11 @@ end
 if external_ip == "none" then
   ping_time = "No network"
 else
-  ping_time = netstats.get_response_time
+  if options[:ping] then
+    ping_time = netstats.get_response_time
+  else
+    ping_time = 'disabled'
+  end
 end
 
 output = 
