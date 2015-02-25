@@ -16,7 +16,7 @@ parser = OptionParser.new do |opts|
   end
   
   options[:indicator] = '◆◆'
-  opts.on( 'i INDICATOR', '--indicator INDICATOR', 'The string used to denote which day it currently is on the separator (should be 2 characters)') do |indicator|
+  opts.on( '-i INDICATOR', '--indicator INDICATOR', 'The string used to denote which day it currently is on the separator (should be 2 characters)') do |indicator|
     options[:indicator] = indicator
   end
   
