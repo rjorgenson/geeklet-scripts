@@ -2,6 +2,8 @@
 
 ## A collection of scripts for use with GeekTool
 
+For best results using these scripts with geektool you should use a [fixed width font](https://en.wikipedia.org/wiki/Monospaced_font).
+
 ### calendar.rb
 
 ```
