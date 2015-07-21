@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 #coding: utf-8
+#recommended font: menlo
 
 require 'optparse'
 require 'date'
