@@ -8,7 +8,7 @@ options = {}
 # grab command line arguments
 parser = OptionParser.new do |opts|
   opts.banner = "Usage: battery.rb [options]"
-  
+
   options[:color] = false
   opts.on( '-c', '--color', 'Display battery meter with color' ) do
     options[:color] = true
@@ -17,7 +17,11 @@ parser = OptionParser.new do |opts|
   opts.on( '-s SIZE', '--size SIZE', [:small, :big, :bigger], 'Size (small, big, bigger) of battery meter') do |size|
     options[:size] = size
   end
-  
+  options[:cell] = "❚"
+  opts.on( '-l CELL', '--cell CELL', 'The character to use for each battery cell' ) do |cell|
+    options[:cell] = cell
+  end
+
   opts.on( '-h', '--help', 'Displays this help screen' ) do
     puts opts
     exit
@@ -59,7 +63,7 @@ class Battery
       byellow = 15
       bgreen = 50
     end
-    
+
     if color then
       red = "\e[31m"
       yellow = "\e[33m"
@@ -72,13 +76,13 @@ class Battery
       clear = ""
     end
     meter = ""
-    
+
     for i in (1..blength) # one bar per 10% battery, dashes for each empty 10%
       if percent >= bpercent then
         i <= bred ? meter << red : nil # first 2 bars red
         i <= byellow && i > bred ? meter << yellow : nil # next 3 bars yellow
         i <= bgreen && i > byellow ? meter << green : nil # remaining 5 green
-        meter << "❚" + clear # clear color
+        meter << @options[:cell] + clear # clear color
       else
         meter << "·" # empty
       end # if percent >= 10
@@ -86,7 +90,7 @@ class Battery
     end # for i in (1..10)
     return meter + clear
   end # def build_meter
-  
+
   def build_time # determines time remaining on battery
     hour = @time.strip.to_i / 60 # hours left
     min = @time.strip.to_i - (hour * 60) # minutes left
@@ -103,12 +107,12 @@ class Battery
         batTime = "Calculating"
       else
         batTime = "#{hour}:#{min}"
-      end # if @time < 1 || @ time > 2000 
+      end # if @time < 1 || @ time > 2000
     end # if @conn.strip == "Yes"
-    
+
     return batTime
   end # def build_time
-  
+
   def build_percent # returns percentage of battery remaining
     return (@cur.to_f / @max.to_f * 100).round.to_i
   end # def build_percent
