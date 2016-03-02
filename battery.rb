@@ -21,6 +21,10 @@ parser = OptionParser.new do |opts|
   opts.on( '-l CELL', '--cell CELL', 'The character to use for each battery cell' ) do |cell|
     options[:cell] = cell
   end
+  options[:html] = false
+  opts.on( '-h', '--html', 'Out put HTML color codes instead of shell' ) do
+    options[:html] = true
+  end
 
   opts.on( '-h', '--help', 'Displays this help screen' ) do
     puts opts
@@ -65,10 +69,17 @@ class Battery
     end
 
     if color then
-      red = "\e[31m"
-      yellow = "\e[33m"
-      green = "\e[32m"
-      clear = "\e[0m"
+      if @options[:html] then
+        red = "<span style='color:red'>"
+        yellow = "<span style='color:yellow'>"
+        green = "<span style='color:green'>"
+        clear = "</span>"
+      else
+        red = "\e[31m"
+        yellow = "\e[33m"
+        green = "\e[32m"
+        clear = "\e[0m"
+      end
     else
       red = ""
       yellow = ""
