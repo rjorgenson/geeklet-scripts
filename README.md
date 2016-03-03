@@ -9,12 +9,11 @@ For best results using these scripts with geektool you should use a [fixed width
 ```
 Usage: calendar.rb [options]
     -v, --vertical                   Orients the calendar vertically instead of horizontally
-        --indicator INDICATOR        i INDICATOR
-                                     The string used to denote which day it currently is on the separator (should be 2 characters)
-        --colorize                   indicate the current day with color
+    -i, --indicator INDICATOR        The string used to denote which day it currently is on the separator (should be 2 characters)
+    -z, --colorize                   indicate the current day with color
     -c, --color COLOR                Sets the color to use as the current day marker (black, red, green, yellow, blue, magenta, cyan, white)
     -C, --hicolor                    Uses the hicolor ASCII value for the chose color
-        --colordate                  Use color to mark the date (01, 02, 03)
+    -t, --colordate                  Use color to mark the date (01, 02, 03)
     -d, --colorday                   Use color to mark the day (Mo, Tu, We)
     -S, --noseparator                Do not output the separator line between days and dates
     -H, --html                       Output HTML color codes instead of shell for use with Ubersicht
