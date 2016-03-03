@@ -7,12 +7,12 @@ options = {}
 
 parser = OptionParser.new do |opts|
   opts.banner = "Usage: netstats.rb [options]"
-  
+
   options[:iface] = 'en1'
   opts.on( '-i IFACE', '--iface IFACE', 'Set iface to monitor' ) do |iface|
     options[:iface] = iface
   end
-  
+
   options[:wifi] = false
   opts.on( '-w', '--wifi', 'iface is a wireless access point' ) do
     options[:wifi] = true
@@ -28,6 +28,11 @@ parser = OptionParser.new do |opts|
     options[:server] = server
   end
 
+  options[:html] = false
+  opts.on( '-h', '--html', 'Output HTML color codes instead of shell') do
+    options[:html] = true
+  end
+
   opts.on( '-h', '--help', 'Displays this help screen' ) do
     puts opts
     exit
@@ -38,7 +43,7 @@ parser.parse!
 
 class Net_Stats
   AIRPORT_UTILITY = "/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport"
-  
+
   def initialize(opts)
       @options = opts
   end
@@ -52,7 +57,7 @@ class Net_Stats
     end
     return iip
   end
-  
+
   def get_external_ip
     begin
       return %x{curl -s http://icanhazip.com}.strip
@@ -60,7 +65,7 @@ class Net_Stats
       return "none"
     end
   end
-  
+
   def get_access_point
     ap = %x{#{Net_Stats::AIRPORT_UTILITY} -I | grep ' SSID' | awk '{ print $2 }'}
     if ap.to_s == "" then
@@ -78,13 +83,13 @@ class Net_Stats
       return "No Network"
     end
   end
-  
+
   def get_txrx_totals
     rx = %x{netstat -I #{@options[:iface]} -b | grep -e "#{@options[:iface]}" -m 1 | awk '{print $7}'}.to_i
     tx = %x{netstat -I #{@options[:iface]} -b | grep -e "#{@options[:iface]}" -m 1 | awk '{print $10}'}.to_i
     return self.human_readable_bytes(tx) + " : " + self.human_readable_bytes(rx)
   end
-  
+
   def human_readable_bytes(bytes)
     level = 0
     until bytes < 1024
@@ -110,7 +115,7 @@ class Net_Stats
 end
 
 netstats = Net_Stats.new(options)
-    
+
 iface = options[:iface]
 ping_server = options[:server]
 
@@ -132,13 +137,25 @@ else
   end
 end
 
-output = 
-<<-EOS
- Internal IP : #{internal_ip}
- External IP : #{external_ip}
-   Interface : #{iface}
-       TX:RX : #{txrx}
-Access Point : #{access_point}
-   Ping Time : #{ping_time} (#{ping_server})
-EOS
+if options[:html] then
+  output =
+  <<-EOS
+  &nbsp;Internal IP : #{internal_ip}<br\>
+  &nbsp;External IP : #{external_ip}<br\>
+  &nbsp;&nbsp;&nbsp;Interface : #{iface}<br\>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TX:RX : #{txrx}<br\>
+  Access Point : #{access_point}<br\>
+  &nbsp;&nbsp;&nbsp;Ping Time : #{ping_time} (#{ping_server})<br\>
+  EOS
+else
+  output =
+  <<-EOS
+   Internal IP : #{internal_ip}
+   External IP : #{external_ip}
+     Interface : #{iface}
+         TX:RX : #{txrx}
+  Access Point : #{access_point}
+     Ping Time : #{ping_time} (#{ping_server})
+  EOS
+end
 puts output

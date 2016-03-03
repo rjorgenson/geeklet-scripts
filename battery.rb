@@ -13,14 +13,17 @@ parser = OptionParser.new do |opts|
   opts.on( '-c', '--color', 'Display battery meter with color' ) do
     options[:color] = true
   end
+
   options[:size] = "small"
   opts.on( '-s SIZE', '--size SIZE', [:small, :big, :bigger], 'Size (small, big, bigger) of battery meter') do |size|
     options[:size] = size
   end
+
   options[:cell] = "❚"
   opts.on( '-l CELL', '--cell CELL', 'The character to use for each battery cell' ) do |cell|
     options[:cell] = cell
   end
+
   options[:html] = false
   opts.on( '-h', '--html', 'Out put HTML color codes instead of shell' ) do
     options[:html] = true

@@ -51,6 +51,7 @@ parser = OptionParser.new do |opts|
   opts.on( '-S', '--noseparator', 'Do not output the separator line between days and dates') do
     options[:noseparator] = true
   end
+
   options[:html] = false
   opts.on( '-h', '--html', 'Output HTML color codes instead of shell') do
     options[:html] = true
