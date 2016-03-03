@@ -25,7 +25,7 @@ parser = OptionParser.new do |opts|
   end
 
   options[:html] = false
-  opts.on( '-h', '--html', 'Out put HTML color codes instead of shell' ) do
+  opts.on( '-H', '--html', 'Out put HTML color codes instead of shell' ) do
     options[:html] = true
   end
 
