@@ -3,8 +3,6 @@
 
 require 'optparse'
 require 'date'
-require 'htmlentities'
-encoder = HTMLEntities.new
 
 options = {}
 
@@ -53,7 +51,7 @@ parser = OptionParser.new do |opts|
   end
 
   options[:html] = false
-  opts.on( '-H', '--html', 'Output HTML color codes instead of shell') do
+  opts.on( '-H', '--html', 'Output HTML color codes instead of shell - requires HTMLEntities gem') do
     options[:html] = true
   end
 
@@ -66,6 +64,8 @@ end
 parser.parse!
 
 if options[:html] then
+  require 'htmlentities'
+  encoder = HTMLEntities.new
   options[:indicator] = encoder.encode(options[:indicator], :named)
 end
 
