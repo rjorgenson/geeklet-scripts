@@ -1,6 +1,6 @@
 # Geeklet Scripts
 
-## A collection of scripts for use with GeekTool
+## A collection of scripts for use with [GeekTool](http://projects.tynsoe.org/en/geektool/) or [Übersicht](http://tracesof.net/uebersicht/)
 
 For best results using these scripts with geektool you should use a [fixed width font](https://en.wikipedia.org/wiki/Monospaced_font).
 
@@ -17,6 +17,7 @@ Usage: calendar.rb [options]
         --colordate                  Use color to mark the date (01, 02, 03)
     -d, --colorday                   Use color to mark the day (Mo, Tu, We)
     -S, --noseparator                Do not output the separator line between days and dates
+    -H, --html                       Output HTML color codes instead of shell for use with Ubersicht
     -h, --help                       Displays this help dialogue
 ```
 
@@ -25,6 +26,7 @@ Usage: calendar.rb [options]
 Usage: battery.rb [options]
     -c, --color                      Display battery meter with color
     -s, --size SIZE                  Size (small, big, bigger) of battery meter
+    -H, --html                       Output HTML color codes instead of shell for use with Ubersicht
     -h, --help                       Displays this help screen
 ```
 ### netstats.rb
@@ -33,6 +35,7 @@ Usage: netstats.rb [options]
     -i, --iface IFACE                Set iface to monitor
     -w, --wifi                       iface is a wireless access point
     -s, --server                     set the server to gauge ping response[google.com]
+    -H, --html                       Output HTML color codes instead of shell for use with Ubersicht
     -h, --help                       Displays this help screen
 ```
 
