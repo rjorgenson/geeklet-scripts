@@ -236,18 +236,26 @@ if options[:vertical] then
     if options[:noseparator] then
       # each hash pair printed out separated by spaces
       puts d[0].to_s +encoder.decode(Line_Calendar::SEPARATOR_STRING_A)+ d[1].to_s
+      puts "<br\>" if options[:html]
     elsif Time.now.year == year && Time.now.month == month && d[1].to_i == Time.now.day then
       # is it today?
       if options[:colorize] then
         # add color and indicator if requested
-        puts d[0].to_s + encoder.decode(Line_Calendar::SEPARATOR_STRING_A) + Line_Calendar::COLORS[options[:color].to_s] + options[:indicator] + Line_Calendar::END_COLOR + encoder.decode(Line_Calendar::SEPARATOR_STRING_A) + d[1].to_s
+        if options[:html] then
+          puts d[0].to_s + encoder.decode(Line_Calendar::SEPARATOR_STRING_A) + Line_Calendar::HTML_COLORS[options[:color].to_s] + options[:indicator] + Line_Calendar::END_HTML_COLOR + encoder.decode(Line_Calendar::SEPARATOR_STRING_A) + d[1].to_s
+        else
+          puts d[0].to_s + encoder.decode(Line_Calendar::SEPARATOR_STRING_A) + Line_Calendar::COLORS[options[:color].to_s] + options[:indicator] + Line_Calendar::END_COLOR + encoder.decode(Line_Calendar::SEPARATOR_STRING_A) + d[1].to_s
+        end
+        puts "<br\>" if options[:html]
       else
         # otherwise just add indicator
         puts d[0].to_s + encoder.decode(Line_Calendar::SEPARATOR_STRING_A) + options[:indicator] + encoder.decode(Line_Calendar::SEPARATOR_STRING_A) + d[1].to_s
+        puts "<br\>" if options[:html]
       end
     else
       # not today, no indication required
       puts d[0].to_s + encoder.decode(Line_Calendar::SEPARATOR_STRING_A) + Line_Calendar::SEPARATOR_STRING_C + encoder.decode(Line_Calendar::SEPARATOR_STRING_A) + d[1].to_s
+      puts "<br\>" if options[:html]
     end
   end
 else
