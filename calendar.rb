@@ -23,7 +23,7 @@ parser = OptionParser.new do |opts|
   end
 
   options[:colorize] = false
-  opts.on( '-C', '--colorize', 'indicate the current day with color') do
+  opts.on( '-z', '--colorize', 'indicate the current day with color') do
     options[:colorize] = true
   end
 
@@ -38,7 +38,7 @@ parser = OptionParser.new do |opts|
   end
 
   options[:colordate] = false
-  opts.on( '-d', '--colordate', 'Use color to mark the date (01, 02, 03)') do
+  opts.on( '-t', '--colordate', 'Use color to mark the date (01, 02, 03)') do
     options[:colordate] = true
   end
 
