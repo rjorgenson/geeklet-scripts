@@ -1,6 +1,6 @@
 # Geeklet Scripts
 
-## A collection of scripts for use with GeekTool
+## A collection of scripts for use with [GeekTool](http://projects.tynsoe.org/en/geektool/) or [Übersicht](http://tracesof.net/uebersicht/)
 
 For best results using these scripts with geektool you should use a [fixed width font](https://en.wikipedia.org/wiki/Monospaced_font).
 
