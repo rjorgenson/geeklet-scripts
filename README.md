@@ -16,7 +16,7 @@ Usage: calendar.rb [options]
     -t, --colordate                  Use color to mark the date (01, 02, 03)
     -d, --colorday                   Use color to mark the day (Mo, Tu, We)
     -S, --noseparator                Do not output the separator line between days and dates
-    -H, --html                       Output HTML color codes instead of shell for use with Ubersicht
+    -H, --html                       Output HTML color codes instead of shell for use with Ubersicht - requires HTMLEntities gem
     -h, --help                       Displays this help dialogue
 ```
 
