@@ -3,43 +3,45 @@
 
 require 'optparse'
 require 'date'
+require 'htmlentities'
+encoder = HTMLEntities.new
 
 options = {}
 
 # grab command line arguments
 parser = OptionParser.new do |opts|
   opts.banner = 'Usage: calendar.rb [options]'
-  
-  options[:vertical] = false 
+
+  options[:vertical] = false
   opts.on( '-v', '--vertical', 'Orients the calendar vertically instead of horizontally') do
     options[:vertical] = true
   end
-  
+
   options[:indicator] = '◆◆'
   opts.on( '-i INDICATOR', '--indicator INDICATOR', 'The string used to denote which day it currently is on the separator (should be 2 characters)') do |indicator|
     options[:indicator] = indicator
   end
-  
+
   options[:colorize] = false
   opts.on( '-C', '--colorize', 'indicate the current day with color') do
     options[:colorize] = true
   end
-  
+
   options[:color] = 'green'
   opts.on( '-c COLOR', '--color COLOR', [:black, :red, :green, :yellow, :blue, :magenta, :cyan, :white], 'Sets the color to use as the current day marker (black, red, green, yellow, blue, magenta, cyan, white)') do |color|
     options[:color] = color
   end
-  
+
   options[:hicolor] = false
   opts.on( '-C', '--hicolor', 'Uses the hicolor ASCII value for the chose color') do
     options[:hicolor] = true
   end
-  
+
   options[:colordate] = false
   opts.on( '-d', '--colordate', 'Use color to mark the date (01, 02, 03)') do
     options[:colordate] = true
   end
-  
+
   options[:colorday] = false
   opts.on( '-d', '--colorday', 'Use color to mark the day (Mo, Tu, We)') do
     options[:colorday] = true
@@ -48,6 +50,10 @@ parser = OptionParser.new do |opts|
   options[:noseparator] = false
   opts.on( '-S', '--noseparator', 'Do not output the separator line between days and dates') do
     options[:noseparator] = true
+  end
+  options[:html] = false
+  opts.on( '-h', '--html', 'Output HTML color codes instead of shell') do
+    options[:html] = true
   end
 
   opts.on( '-h', '--help', 'Displays this help dialogue' ) do
@@ -58,16 +64,38 @@ end
 
 parser.parse!
 
+if options[:html] then
+  options[:indicator] = encoder.encode(options[:indicator], :named)
+end
+
 class Line_Calendar
   # set up some constants for use in throughout the script
-  SEPARATOR_STRING_A = "  " # the string used to separate days and dates
+  SEPARATOR_STRING_A = "&nbsp;&nbsp;" # the string used to separate days and dates
   SEPARATOR_STRING_B = "··" # the string used between seperators
   SEPARATOR_STRING_C = "··" # the separator string
   END_COLOR = "\e[0m" # this string ends color output
+  END_HTML_COLOR = "</span>"
   HI_COLOR = "\e[1m" # this string denotes bold color
   ABBR_DAYNAMES = {0 =>  'Su', 1 => 'Mo', 2 => 'Tu', 3 => 'We', 4 => 'Th', 5 => 'Fr', 6 => 'Sa'} # map of abbreviated day names to matching index for date functions
   # hash of the different colors available as ASCII output
-  COLORS = {'black' => "\e[30m", 'red' => "\e[31m", 'green' => "\e[32m", 'yellow' => "\e[33m", 'blue' => "\e[34m", 'magenta' => "\e[35m", 'cyan' => "\e[36m", 'white' => "\e[37m"}
+  COLORS =  {'black' => "\e[30m",
+            'red' => "\e[31m",
+            'green' => "\e[32m",
+            'yellow' => "\e[33m",
+            'blue' => "\e[34m",
+            'magenta' => "\e[35m",
+            'cyan' => "\e[36m",
+            'white' => "\e[37m"
+            }
+  HTML_COLORS = {'black' => "<span style='color:black'>",
+                'red' => "<span style='color:red'>",
+                'green' => "<span style='color:green'>",
+                'yellow' => "<span style='color:yellow'>",
+                'blue' => "<span style='color:'>",
+                'magenta' => "<span style='color:'>",
+                'cyan' => "<span style='color:'>",
+                'white' => "<span style='color:white'>"
+                }
 
   def initialize(opts)
     @options = opts
@@ -77,12 +105,12 @@ class Line_Calendar
   def days_in_month(year, month)
     return (Date.new(year, 12, 31) << (12 - month)).day
   end
-  
+
   # returns what day of the month it is (1-31)
   def day_in_month(year, month, day)
     return Date.new(year, month, day).wday
   end
-  
+
   # returns an array of days in the month (Mo, Tu, We, etc.)
   def build_day_array(year, month)
     day_array = Array.new
@@ -94,7 +122,7 @@ class Line_Calendar
     day_array.shift
     return day_array
   end
-  
+
   # builds the separator line between the days and dates
   def build_separator(year, month)
     separator = Array.new
@@ -112,7 +140,7 @@ class Line_Calendar
     separator.shift
     return separator
   end
-  
+
   # build array of dates (1-31)
   def build_date_array(year, month)
     date_array = Array.new
@@ -134,7 +162,7 @@ class Line_Calendar
     # pull in arrays of days and dates
     dates = self.build_date_array(Time.now.year, Time.now.month)
     days = self.build_day_array(Time.now.year, Time.now.month)
-    
+
     # zip the two arrays so we have the following single array to work with
     # [['Mo', '01'], ['Tu', '02']]
     vertical = days.zip(dates)
@@ -147,7 +175,11 @@ class Line_Calendar
     count = 1
     days.each do |d|
         if Time.now.day == count then
+          if @options[:html] then
+            days[count -1] = Line_Calendar::HTML_COLORS[@options[:color].to_s] + days[count -1] + Line_Calendar::END_HTML_COLOR
+          else
             days[count -1] = Line_Calendar::COLORS[@options[:color].to_s] + days[count -1] + Line_Calendar::END_COLOR
+          end
         end
         count += 1
     end
@@ -159,7 +191,11 @@ class Line_Calendar
     sep.each do |s|
       # if it's today, add color and replace string in array
       if Time.now.day == count then
+        if @options[:html] then
+          sep[count -1] = Line_Calendar::HTML_COLORS[@options[:color].to_s] + @options[:indicator] + Line_Calendar::END_HTML_COLOR
+        else
           sep[count -1] = Line_Calendar::COLORS[@options[:color].to_s] + @options[:indicator] + Line_Calendar::END_COLOR
+        end
       end
       # increment counter
       count += 1
@@ -174,7 +210,11 @@ class Line_Calendar
     count = 1
     dates.each do |d|
         if Time.now.day == count then
+          if @options[:html] then
+            dates[count -1] = Line_Calendar::HTML_COLORS[@options[:color].to_s] + dates[count -1].to_s + Line_Calendar::END_HTML_COLOR
+          else
             dates[count -1] = Line_Calendar::COLORS[@options[:color].to_s] + dates[count -1].to_s + Line_Calendar::END_COLOR
+          end
         end
         count += 1
     end
@@ -185,7 +225,7 @@ end
 cal = Line_Calendar.new(options) # pass command line args to object
 year = Time.now.year # current year
 month = Time.now.month # current month
-  
+
 # print out vertically
 if options[:vertical] then
   # build and grab relevant information in a hash ( Mo => 01, Tu => 02 )
@@ -195,49 +235,56 @@ if options[:vertical] then
     # if no separator was requested, don't print one
     if options[:noseparator] then
       # each hash pair printed out separated by spaces
-      puts d[0].to_s + Line_Calendar::SEPARATOR_STRING_A + d[1].to_s
+      puts d[0].to_s +encoder.decode(Line_Calendar::SEPARATOR_STRING_A)+ d[1].to_s
     elsif Time.now.year == year && Time.now.month == month && d[1].to_i == Time.now.day then
       # is it today?
       if options[:colorize] then
         # add color and indicator if requested
-        puts d[0].to_s + Line_Calendar::SEPARATOR_STRING_A + Line_Calendar::COLORS[options[:color].to_s] + options[:indicator] + Line_Calendar::END_COLOR + Line_Calendar::SEPARATOR_STRING_A + d[1].to_s
+        puts d[0].to_s + encoder.decode(Line_Calendar::SEPARATOR_STRING_A) + Line_Calendar::COLORS[options[:color].to_s] + options[:indicator] + Line_Calendar::END_COLOR + encoder.decode(Line_Calendar::SEPARATOR_STRING_A) + d[1].to_s
       else
         # otherwise just add indicator
-        puts d[0].to_s + Line_Calendar::SEPARATOR_STRING_A + options[:indicator] + Line_Calendar::SEPARATOR_STRING_A + d[1].to_s
+        puts d[0].to_s + encoder.decode(Line_Calendar::SEPARATOR_STRING_A) + options[:indicator] + encoder.decode(Line_Calendar::SEPARATOR_STRING_A) + d[1].to_s
       end
     else
       # not today, no indication required
-      puts d[0].to_s + Line_Calendar::SEPARATOR_STRING_A + Line_Calendar::SEPARATOR_STRING_C + Line_Calendar::SEPARATOR_STRING_A + d[1].to_s
+      puts d[0].to_s + encoder.decode(Line_Calendar::SEPARATOR_STRING_A) + Line_Calendar::SEPARATOR_STRING_C + encoder.decode(Line_Calendar::SEPARATOR_STRING_A) + d[1].to_s
     end
   end
 else
 # print out horizontally
-  
+
   # each day (Mo, Tu, We) separated by spaces
   if options[:colorday] then  # add color indicating day
-    puts cal.colorize_days(cal.build_day_array(year, month)) * Line_Calendar::SEPARATOR_STRING_A
+    puts cal.colorize_days(cal.build_day_array(year, month)) * encoder.decode(Line_Calendar::SEPARATOR_STRING_A)
+    puts "<br\>" if options[:html]
   else
     # no color, just output days
-    puts cal.build_day_array(year, month) * Line_Calendar::SEPARATOR_STRING_A
+    puts cal.build_day_array(year, month) * encoder.decode(Line_Calendar::SEPARATOR_STRING_A)
+    puts "<br\>" if options[:html]
   end
 
   # if no separator requested then don't print one
   if options[:noseparator] then
+    puts "<br\>" if options[:html]
   # otherwise print one
   else
     # add color if requested
     if options[:colorize] then
       puts cal.colorize_separator(cal.build_separator(year, month)) * Line_Calendar::SEPARATOR_STRING_C
+      puts "<br\>" if options[:html]
     else
       # plain separator with no color
       puts cal.build_separator(year, month) * Line_Calendar::SEPARATOR_STRING_C
+      puts "<br\>" if options[:html]
     end
   end
 
   # each date (01, 02, 03) separated by spaces
   if options[:colordate] then # add color indicating date
-      puts cal.colorize_date(cal.build_date_array(year, month)) * Line_Calendar::SEPARATOR_STRING_A
+      puts cal.colorize_date(cal.build_date_array(year, month)) * encoder.decode(Line_Calendar::SEPARATOR_STRING_A)
+      puts "<br\>" if options[:html]
   else # no color, just output dates
-    puts cal.build_date_array(year, month) * Line_Calendar::SEPARATOR_STRING_A
+    puts cal.build_date_array(year, month) * encoder.decode(Line_Calendar::SEPARATOR_STRING_A)
+    puts "<br\>" if options[:html]
   end
 end
