@@ -6,6 +6,8 @@ For best results using these scripts with geektool you should use a [fixed width
 
 ### calendar.rb
 
+This geeklet requires the htmlentities gem, you can install this with ```sudo gem install htmlentities```
+
 ```
 Usage: calendar.rb [options]
     -v, --vertical                   Orients the calendar vertically instead of horizontally
