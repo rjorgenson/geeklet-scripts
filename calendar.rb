@@ -3,6 +3,7 @@
 
 require 'optparse'
 require 'date'
+require 'htmlentities'
 
 options = {}
 
@@ -63,9 +64,9 @@ end
 
 parser.parse!
 
+encoder = HTMLEntities.new
+
 if options[:html] then
-  require 'htmlentities'
-  encoder = HTMLEntities.new
   options[:indicator] = encoder.encode(options[:indicator], :named)
 end
 
