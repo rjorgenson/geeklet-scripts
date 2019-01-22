@@ -60,7 +60,7 @@ class Net_Stats
 
   def get_external_ip
     begin
-      return %x{curl -s http://icanhazip.com}.strip
+      return %x{dig +short myip.opendns.com @resolver1.opendns.com}.strip
     rescue
       return "none"
     end
