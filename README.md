@@ -23,6 +23,9 @@ Usage: calendar.rb [options]
 ```
 
 ### battery.rb
+
+Displays a battery meter for the system battery.
+
 ```
 Usage: battery.rb [options]
     -c, --color                      Display battery meter with color
@@ -30,7 +33,26 @@ Usage: battery.rb [options]
     -H, --html                       Output HTML color codes instead of shell for use with Ubersicht
     -h, --help                       Displays this help screen
 ```
+
+### btbattery.rb
+
+This script is very limited in what it supports currently. Tested with Magic Keyboard with Numeric Keypad and Magic Mouse, though it should support all Apple Bluetooth HID devices.
+
+```
+Usage: battery.rb [options]
+    -c, --color                      Display battery meter with color
+    -s, --size SIZE                  Size (small, big, bigger) of battery meter
+    -l, --cell CELL                  The character to use for each battery cell
+    -H, --html                       Out put HTML color codes instead of shell
+    -m, --map MAP                    Key:Value mapping of device names to display names, separated by a semicolon (;) (ex: 'Magic Keyboard with Numeric Keypad:Keyboard')
+    -S, --separator SEPARATOR        Split multiple batteries by this string (default '\n')
+    -h, --help                       Displays this help screen
+```
+
 ### netstats.rb
+
+Displays some basic network interface data.
+
 ```
 Usage: netstats.rb [options]
     -i, --iface IFACE                Set iface to monitor
@@ -41,6 +63,9 @@ Usage: netstats.rb [options]
 ```
 
 ### date.rb
+
+Very basic script to output a date string with some predefined types or using a custom unix date string.
+
 ```
 Usage: date.rb [string type]
     -t, --type TYPE                  Date string type to output (long, short, time, longDate, shortDate, string)
