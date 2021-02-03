@@ -40,7 +40,7 @@ parser.parse!
 class Battery
   def initialize(opts) # gather relevant info
     @options = opts
-    @conn = `ioreg -n AppleSmartBattery | grep ExternalConnected | awk '{ print $NF }'` # is power connected
+    @conn = `ioreg -n AppleSmartBattery | grep ExternalConnected | awk '/ "ExternalConnected" / { print $NF }'` # is power connected
     @chrg = `ioreg -n AppleSmartBattery | grep IsCharging | awk '{ print $NF }'` # is battery chargin
     @time = `ioreg -n AppleSmartBattery | grep TimeRemaining | awk '{ print $NF }'` # time remaining on battery
     @max = `ioreg -n AppleSmartBattery | grep MaxCapacity | awk '/ "MaxCapacity" /{ print $NF }'` # maximum capacity
