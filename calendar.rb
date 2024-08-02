@@ -273,11 +273,8 @@ else
     puts "<br\>" if options[:html]
   end
 
-  # if no separator requested then don't print one
-  if options[:noseparator] then
-    puts "<br\>" if options[:html]
-  # otherwise print one
-  else
+  # don't print separator if option set
+  unless options[:noseparator] then
     # add color if requested
     if options[:colorize] then
       puts cal.colorize_separator(cal.build_separator(year, month)) * Line_Calendar::SEPARATOR_STRING_C

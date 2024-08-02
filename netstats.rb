@@ -67,7 +67,7 @@ class Net_Stats
   end
 
   def get_access_point
-    ap = %x{#{Net_Stats::AIRPORT_UTILITY} -I | grep ' SSID' | awk '{ print $2 }'}
+    ap = %x{#{Net_Stats::AIRPORT_UTILITY} -I | awk -F':' '/ SSID/ { print $2 }'}
     if ap.to_s == "" then
       return "none"
     else
