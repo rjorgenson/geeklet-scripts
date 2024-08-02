@@ -142,14 +142,11 @@ class Battery
   end # def build_time
 
   def display_meters
-    meters = ""
+    meters = []
     for i in (0..@devices.length-1)
-      meters += self.build_identifier(i) + self.build_meter(i, @options[:color]) + self.build_time(i).to_s
-      if i < @devices.length-1
-        meters += @options[:separator]
-      end
+      meters.append(self.build_identifier(i) + self.build_meter(i, @options[:color]) + self.build_time(i).to_s)
     end
-    return meters
+    return meters.sort.join(@options[:separator])
   end
 end # Class Battery
 
