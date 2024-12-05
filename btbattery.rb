@@ -121,8 +121,9 @@ class Battery
   end # def build_meter
 
   def build_identifier(device)
-    match = @devices[device].match(/Product\" = \"(.*)\"/)
-    id = match && match[1] || "Unknown"
+    product = @devices[device].match(/Product\" = \"(.*)\"/)
+    address = @devices[device].match(/DeviceAddress\" = \"(.*)\"/)
+    id = product && product[1] || address && address[1] || "Unknown"
     if @map && @map[id]
       id = @map[id].to_s
     end
