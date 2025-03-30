@@ -29,7 +29,8 @@ parser = OptionParser.new do |opts|
 
   options[:map] = false
   opts.on('-m MAP', '--map MAP',
-          'Key:Value mapping of device names to display names, separated by a semicolon (;) [Magic Keyboard with Numeric Keypad:Keyboard]') do |map|
+          'Key:Value mapping of device names to display names, separated by a semicolon (;)' \
+          ' [Magic Keyboard with Numeric Keypad:Keyboard]') do |map|
     options[:map] = map
   end
 
@@ -48,19 +49,20 @@ end
 parser.parse!
 
 class Battery
-  def initialize(opts) # gather relevant info
+  # gather relevant info
+  def initialize(opts)
     @options = opts
     @options[:separator] = '<br />' if @options[:html] && @options[:separator] == "\n"
     if @options[:map]
       @map = {}
-      for device in @options[:map].split(';')
+      @options[:map].split(';').each do |device|
         @map[device.split(':')[0]] = device.split(':')[1]
       end
     end
     @devices = `ioreg -c AppleDeviceManagementHIDEventService -r`.split("\n\n")
-  end # def initialize
+  end
 
-  def build_meter(device, color) # built battery meter
+  def build_meter(device, color)
     percent = @devices[device].match(/BatteryPercent" = (\d+)/)[1].to_i
     meter = ''
     # case size
@@ -103,7 +105,7 @@ class Battery
       clear = ''
     end
 
-    for i in (1..blength) # one bar per 10% battery, dashes for each empty 10%
+    (1..blength).each do |i|
       if percent >= bpercent
         i <= bred ? meter << red : nil # first 2 bars red
         i <= byellow && i > bred ? meter << yellow : nil # next 3 bars yellow
@@ -111,12 +113,12 @@ class Battery
         meter << @options[:cell] + clear # clear color
       else
         meter << '·' # empty
-      end # if percent >= 10
+      end
       percent -= bpercent # decrement percentage for next loop
-    end # for i in (1..10)
-    meter += ' ' + (percent + 100).to_s + '%'
+    end
+    meter += "#{percent + 100}%"
     meter + clear
-  end # def build_meter
+  end
 
   def build_identifier(device)
     product = @devices[device].match(/Product" = "(.*)"/)
