@@ -125,30 +125,30 @@ class Battery
     address = @devices[device].match(/DeviceAddress" = "(.*)"/)
     id = product && product[1] || address && address[1] || 'Unknown'
     id = @map[id].to_s if @map && @map[id]
-    id + ': '
+    "#{id}: "
   end
 
-  def build_time(device) # determines time remaining on battery
-    batTime = ''
+  def build_time(device)
+    bat_time = ''
     if @devices[device].match(/BatteryStatusFlags" = (\d+)/)[1] == '3'
-      batTime = if @devices[device].match(/BatteryPercent" = (\d+)/)[1] == '100'
-                  ' (Charged)'
-                else
-                  ' (Charging)'
-                end
+      bat_time = if @devices[device].match(/BatteryPercent" = (\d+)/)[1] == '100'
+                   ' (Charged)'
+                 else
+                   ' (Charging)'
+                 end
     end
 
-    batTime
-  end # def build_time
+    bat_time
+  end
 
   def display_meters
     meters = []
-    for i in (0..@devices.length - 1)
+    (0..@devices.length - 1).each do |i|
       meters.append(build_identifier(i) + build_meter(i, @options[:color]) + build_time(i).to_s)
     end
     meters.sort.join(@options[:separator])
   end
-end # Class Battery
+end
 
 battery = Battery.new(options)
 
